@@ -26,8 +26,15 @@ if(isset($_FILES["att_file"]["type"]) && $_FILES["att_file"]["name"] != '') {
 			
 			$name = str_replace('#', '_', $name);
 			
+			$name = str_replace('-', '_', $name);
+			
 			$type = $_FILES['att_file']['type'];
 			
+			if(empty($type) != false) {
+			
+				$type = 'image/jpeg';
+				
+			}
 			$extension = strtolower($type);
 			
 			$file = $_FILES['att_file']['tmp_name'];
@@ -65,8 +72,12 @@ else {
 }
 
 $text = $_POST['query'];
+$text = trim($text);
 
 $link = $_POST['link'];
+
+$title = $_POST['title'];
+$title = trim($title);
 
 if($text != '') {
 
@@ -80,11 +91,30 @@ if($text != '') {
 
 $date = date("Y-m-d");
 
-	$con = mysqli_connect('localhost','root','rootpassword','blog');
-	
-	mysqli_query($con, "INSERT INTO `content` (`id`,`email`,`text`,`file_name`,`file_type`,`link`,`date`) VALUES (`id`,'$id','$text','$final','$extension','$link','$date')");
-	
-	echo 'Successfully uploaded!';
+if($text == '' && $link == '' && $final == '') {
 
+	echo 'No can do';
+	
+}
+
+else {
+
+	if($size <= 524288000) {
+
+		$con = mysqli_connect('localhost','root','rootpassword','blog');
+		
+		mysqli_query($con, "INSERT INTO `content` (`id`,`email`,`title`,`text`,`file_name`,`file_type`,`link`,`date`) VALUES (`id`,'$id','$title','$text','$final','$extension','$link','$date')");
+		
+		echo 'Successfully uploaded!';
+		
+	}
+	
+	else {
+	
+		echo 'File size too big!';
+		
+	}
+	
+}
 
 ?>
